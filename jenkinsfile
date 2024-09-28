@@ -1,51 +1,44 @@
 pipeline {
     agent any
+    --ou--
     agent {
-        // If you want to specify a node with the 'build' label, keep this; otherwise, use 'agent any' for general use
         node {
-            label 'build' // Replace 'build' with your actual node label if needed
+            label 'build'
         }
     }
-
     tools {
-        // Ensure Maven is properly configured in Jenkins under this label
-        maven 'M2_HOME' // Make sure 'M2_HOME' matches the name of your Maven installation in Jenkins
+        maven 'M2_HOME'
     }
-
     options {
-        // Timeout counter starts after the agent is allocated
-        timeout(time: 1, unit: 'MINUTES') // Changed to 'MINUTES', since 'SECONDS' is usually too short
+        --Timeout counter starts after agent is allocated--
+        timeout(time: 1, unit: 'SECONDS')
     }
-
     environment {
-        APP_ENV = "DEV" // Set your environment variable
+        APP_ENV = "DEV"
     }
-
     stages {
         stage('Code Checkout') {
             steps {
-                git branch: 'master',
+                git branch: 'main',
                     url: 'https://github.com/hwafa/atelier-jenkins.git',
-                    credentialsId: 'jenkins-example-github-pat' // Ensure this credential exists in Jenkins
+                    credentialsId: 'jenkins-example-github-pat'
             }
         }
-
         stage('Code Build') {
             steps {
-                sh 'mvn install -Dmaven.test.skip=true' // Skipping tests for faster builds
+                sh 'mvn install -Dmaven.test.skip=true'
             }
         }
     }
-
     post {
         always {
-            echo "======Always executed, cleanup if needed======"
+            echo "======always======"
         }
         success {
-            echo "=====Pipeline executed successfully====="
+            echo "=====pipeline executed successfully ====="
         }
         failure {
-            echo "======Pipeline execution failed======"
+            echo "======pipeline execution failed======"
         }
     }
 }
